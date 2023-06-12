@@ -11,7 +11,117 @@ app.use(bodyParser.json());
 app.use(cors());
 
 //
-var _dishes = [];
+var _dishes = [{
+    "_id": "1",
+    "name": "Veggie Delight Salad",
+    "shortDescription": "A refreshing mix of fresh vegetables and greens",
+    "price": 9.99,
+    "category": "Starter",
+    "type": "lunch",
+    "available": true,
+    "bestSeller":true,
+    "waitTime": 10
+  },
+  {
+    "_id": "2",
+    "name": "Spicy Tofu Stir Fry",
+    "shortDescription": "Tofu and mixed vegetables in a flavorful sauce",
+    "price": 12.99,
+    "category": "Main course",
+    "type": "dinner",
+    "available": true,
+    "bestSeller":true,
+    "waitTime": 20
+  },
+  {
+    "_id": "3",
+    "name": "Mushroom Risotto",
+    "shortDescription": "Creamy risotto with fresh mushrooms",
+    "price": 11.99,
+    "category": "Main course",
+    "type": "Weekends",
+    "available": true,
+    "bestSeller":true,
+    "waitTime": 25
+  },
+  {
+    "_id": "4",
+    "name": "Chocolate Mousse",
+    "shortDescription": "Rich and creamy chocolate dessert",
+    "price": 6.99,
+    "category": "Dessert",
+    "type": "Weekdays",
+    "available": true,
+    "bestSeller":true,
+    "waitTime": 15
+  },
+  {
+    "_id": "5",
+    "name": "Fresh Fruit Smoothie",
+    "shortDescription": "A refreshing blend of assorted fresh fruits",
+    "price": 5.99,
+    "category": "Beverage",
+    "type": "breakfast",
+    "available": false,
+    "bestSeller":false,
+    "waitTime": 5
+  },
+  {
+    "_id": "6",
+    "name": "Stuffed Bell Peppers",
+    "shortDescription": "Bell peppers stuffed with rice and vegetables",
+    "price": 8.99,
+    "category": "Starter",
+    "type": "lunch",
+    "available": true,
+    "bestSeller":true,
+    "waitTime": 12
+  },
+  {
+    "_id": "7",
+    "name": "Paneer Tikka Masala",
+    "shortDescription": "Cubes of paneer cooked in a rich tomato-based sauce",
+    "price": 13.99,
+    "category": "Main course",
+    "type": "dinner",
+    "available": true,
+    "bestSeller": true,
+    "waitTime": 18
+  },
+  {
+    "_id": "8",
+    "name": "Vegetable Biryani",
+    "shortDescription": "Fragrant basmati rice cooked with mixed vegetables and spices",
+    "price": 10.99,
+    "category": "Main course",
+    "type": "Weekends",
+    "available": true,
+    "bestSeller":true,
+    "waitTime": 22
+  },
+  {
+    "_id": "9",
+    "name": "Mango Sorbet",
+    "shortDescription": "Refreshing mango-flavored frozen dessert",
+    "price": 7.99,
+    "category": "Dessert",
+    "type": "Weekdays",
+    "available": true,
+    "bestSeller":true,
+    "waitTime": 10
+  },
+  {
+    "_id": "10",
+    "name": "Mint Lemonade",
+    "shortDescription": "Cool and refreshing lemonade with a hint of mint",
+    "price": 3.99,
+    "category": "Beverage",
+    "type": "Weekdays",
+    "available": true,
+    "bestSeller":true,
+    "waitTime": 10
+  }
+];
 
 // get dishes
 router.get('/dishes', (req, res) => {
