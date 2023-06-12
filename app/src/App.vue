@@ -9,8 +9,8 @@
         <template v-slot:prepend>
           <v-list-item
             lines="two"
-            prepend-avatar="https://randomuser.me/api/portraits/women/81.jpg"
-            title="Jane Smith"
+            :prepend-avatar="profileImage"
+            title="Parth Jasani"
             subtitle="Logged in"
           ></v-list-item>
         </template>
@@ -32,6 +32,7 @@
 <script>
 import { defineComponent } from "vue";
 import dishes from './components/dishes.vue'
+import profileImage from '@/assets/profile.png'
 export default defineComponent({
   name: 'App',
 
@@ -40,7 +41,7 @@ export default defineComponent({
   },
 
   data: () => ({
-    //
+    profileImage
   }),
 })
 </script>
