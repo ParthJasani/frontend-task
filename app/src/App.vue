@@ -44,3 +44,6 @@ export default defineComponent({
   }),
 })
 </script>
+<style>
+  @import "https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css";
+</style>
