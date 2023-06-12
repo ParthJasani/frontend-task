@@ -107,7 +107,7 @@
                   icon="mdi-pencil"
                   @click="updateDish(item._id)"
                 ></v-btn
-                ><v-btn size="x-small" color="error" icon="mdi-delete"></v-btn>
+                ><v-btn size="x-small" color="error" icon="mdi-delete" @click="deleteDish(item._id)"></v-btn>
               </td>
             </tr>
           </tbody>
@@ -122,7 +122,28 @@
       @save="dishSaved"
       ></dish-update>
     </v-dialog>
-    
+    <v-dialog v-model="deleteDialog" persistent width="auto" attach=".main-app">
+      <v-card>
+        <v-toolbar color="primary">
+          <v-toolbar-title>
+            <v-icon left>mdi-delete</v-icon>Are you sure?
+          </v-toolbar-title>
+        </v-toolbar>
+        <v-card-text
+          >Do you really want to proceed?</v-card-text
+        >
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" variant="elevated" @click="agree" >
+            <v-icon>mdi-check</v-icon>Yes
+          </v-btn>
+          <v-btn color="300" variant="elevated" @click="disagree" 
+            ><v-icon>mdi-close</v-icon> No
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </template>
   
   <script>
@@ -138,6 +159,8 @@
       let dishes = ref([]);
       const dialog = ref(false);
       const dish_update_id = ref(null);
+      const deleteDialog = ref(false);
+      const deleteDishId = ref(null);
       const isEdit = ref(false);
 
       const successNotification = ref(false);
@@ -194,7 +217,7 @@
     }
 
     /**
-     * Execure when dish created/updated
+     * Execute when dish created/updated
      */
     async function dishSaved(response) {
       dialog.value = false;
@@ -208,12 +231,46 @@
       //Get all the dishes once dish created/updated
       await getDishes();
     }
+
+    /**
+     * Delete dish
+     */
+     async function deleteDish(id){
+      deleteDishId.value = id;
+      deleteDialog.value = true;
+    }
+
+    /**
+     * Once user agree to delete dish
+     */
+    async function agree(){
+      await apiService.delete(deleteDishId.value).then((response) => {
+        console.log("response-->",response.data.message)
+        deleteDialog.value = false;
+        if (response.status === 201 || response.status === 200) {
+          successNotification.value = true;
+          successNotificationText.value = response.data.message;
+        } else {
+          errorNotification.value = true;
+          errorNotificationText.value = response.data.message;
+        }
+      });
+      await getDishes();
+      deleteDishId.value = null;
+    }
+    
+    async function disagree(){
+      deleteDialog.value = false;
+      deleteDishId.value = null;
+    }
   
       return {
         dishes,
         isLoading,
         dialog,
         dish_update_id,
+        deleteDishId,
+        deleteDialog,
         isEdit,
         createDish,
         updateDish,
@@ -223,7 +280,10 @@
         errorNotification,
         successNotificationText,
         errorNotificationText,
-        timeout
+        timeout,
+        deleteDish,
+        agree,
+        disagree,
       };
     },
     components: {
