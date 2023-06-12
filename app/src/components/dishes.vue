@@ -1,5 +1,39 @@
 <template>
     <v-container fluid>
+      <div class="notification">
+      <v-snackbar
+        v-model="successNotification"
+        :timeout="timeout"
+        color="green"
+        right
+        top
+      >
+        <v-icon> mdi-checkbox-marked-circle-outline </v-icon>
+        {{ successNotificationText }}
+
+        <template v-slot:actions>
+          <v-btn text @click="successNotification = false">
+            <v-icon> mdi-close </v-icon>
+          </v-btn>
+        </template>
+      </v-snackbar>
+      <v-snackbar
+        v-model="errorNotification"
+        :timeout="timeout"
+        color="red"
+        top
+        right
+      >
+        <v-icon> mdi-close-circle </v-icon>
+        {{ errorNotificationText }}
+
+        <template v-slot:actions>
+          <v-btn text @click="errorNotification = false">
+            <v-icon> mdi-close </v-icon>
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </div>
       <div v-if="isLoading">
         <v-row align-content="center" justify="center">
           <v-col class="text-subtitle-1 text-center" cols="12">
@@ -71,6 +105,7 @@
                   size="x-small"
                   color="warning"
                   icon="mdi-pencil"
+                  @click="updateDish(item._id)"
                 ></v-btn
                 ><v-btn size="x-small" color="error" icon="mdi-delete"></v-btn>
               </td>
@@ -79,11 +114,21 @@
         </v-table>
       </div>
     </v-container>
+    <v-dialog v-model="dialog" persistent width="1024">
+      <dish-update
+      :id="dish_update_id"
+      :isEdit="isEdit"
+      @close="close"
+      @save="dishSaved"
+      ></dish-update>
+    </v-dialog>
+    
   </template>
   
   <script>
   import { ref, onMounted, defineComponent } from "vue";
   import ApiService from "@/services/ApiService";
+  import dishUpdate from "./dishesUpdate.vue";
   
   export default defineComponent({
     name: "dishes",
@@ -91,7 +136,16 @@
     setup(props) {
       const isLoading = ref(true);
       let dishes = ref([]);
-  
+      const dialog = ref(false);
+      const dish_update_id = ref(null);
+      const isEdit = ref(false);
+
+      const successNotification = ref(false);
+      const errorNotification = ref(false);
+      const successNotificationText = ref("");
+      const errorNotificationText = ref("");
+      const timeout = ref(2000);
+
       const apiService = new ApiService();
   
       onMounted(async () => {
@@ -113,13 +167,68 @@
         });
         isLoading.value = false;
       }
+
+       /**
+     * Open create dish Dialog
+     */
+    async function createDish(){
+      isEdit.value = false;
+      dish_update_id.value = null;
+      dialog.value = true;
+    }
+
+    /**
+     * Open edit dish dialog
+     */
+    async function updateDish(id) {
+      isEdit.value = true;
+      dish_update_id.value = id ? id : null;
+      dialog.value = true;
+    }
+
+    /**
+     * Close Edit dish dialog
+     */
+    async function close() {
+      dialog.value = false;
+    }
+
+    /**
+     * Execure when dish created/updated
+     */
+    async function dishSaved(response) {
+      dialog.value = false;
+      if (response.status === 201 || response.status === 200) {
+        successNotification.value = true;
+        successNotificationText.value = `Item ${isEdit ? 'updated' : 'created'} successfully!`;
+      } else {
+        errorNotification.value = true;
+        errorNotificationText.value = response.data.message;
+      }
+      //Get all the dishes once dish created/updated
+      await getDishes();
+    }
   
       return {
         dishes,
         isLoading,
+        dialog,
+        dish_update_id,
+        isEdit,
+        createDish,
+        updateDish,
+        close,
+        dishSaved,
+        successNotification,
+        errorNotification,
+        successNotificationText,
+        errorNotificationText,
+        timeout
       };
     },
-
+    components: {
+      dishUpdate,
+    },
   });
   </script>
 
